@@ -1,0 +1,33 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: testserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testserver
+  template:
+    metadata:
+      labels:
+        app: testserver
+    spec:
+      containers:
+      - name: testserver
+        image: nmatsui/hello-world-api:latest
+        ports:
+        - containerPort: 3000
+          name: testserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testservice
+  labels:
+    app: testservice
+spec:
+  type: ClusterIP
+  selector:
+    app: testserver
+  ports:
+  - port: 3000

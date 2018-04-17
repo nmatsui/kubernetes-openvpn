@@ -164,7 +164,7 @@
     ```bash
     ubuntu-1:~$ python -m SimpleHTTPServer 8081
     ```
-1. start pod on Kubernetes and connect to `ubuntu-1`
+1. start pod on Kubernetes and connect to `ubuntu-1` through OpenVPN
 
     ```bash
     $ kubectl run testpod --rm -it --image=yauritux/busybox-curl
@@ -213,12 +213,12 @@
     ```bash
     ubuntu-1:~$ sudo sysctl -w net.ipv4.ip_forward=1
     ```
-1. add nat rule to forward packet (port 8082) from Kubernetes to 'ubuntu-2'
+1. add nat rule to forward packet (port 8082) from Kubernetes to `ubuntu-2(192.168.0.5)`
 
     ```bash
     ubuntu-1:~$ sudo iptables -t nat -A PREROUTING -m tcp -p tcp --dst 10.140.0.2 --dport 8082 -j DNAT --to-destination 192.168.0.5:8082
     ubuntu-1:~$ sudo iptables -t nat -A POSTROUTING -m tcp -p tcp --dst 192.168.0.5 --dport 8082 -j SNAT --to-source 192.168.0.4
-    ```
+    > ```
 1. add forward filter to allow forwarding packet
 
     ```bash
@@ -231,7 +231,7 @@
     ```bash
     ubuntu-2:~$ python -m SimpleHTTPServer 8082
     ```
-1. start pod on Kubernetes and connect to `ubuntu-2`
+1. start pod on Kubernetes and connect to `ubuntu-2` through OpenVPN and `ubuntu-1`
 
     ```bash
     $ kubectl run testpod --rm -it --image=yauritux/busybox-curl
